@@ -1,1 +1,0 @@
-# NIH_Face_stm
