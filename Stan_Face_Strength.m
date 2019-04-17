@@ -25,7 +25,7 @@ if exist('output-4.csv', 'file') ~=0
 end
 
 % import data
-load('/Users/Zane/Documents/Bethesda/Research/NIH_Face_Radius/Exp4Face.mat')
+load('Exp4Face.mat')
 %load('TwoVM_Exp3.mat')
 %% Simulation
 
@@ -48,7 +48,7 @@ load('/Users/Zane/Documents/Bethesda/Research/NIH_Face_Radius/Exp4Face.mat')
 % TwoVM = SimData; %% temp
 
 %% Make data structure as Data.errors(ncond, nsub, ntrial)
-nsub =  10; % length(unique(TwoVM(:,1)));
+nsub =  5; % length(unique(TwoVM(:,1)));
 % ntrials = length(TwoVM)/nsub;
 Data.nsub  = nsub;
 Data.ncond  = 4; 

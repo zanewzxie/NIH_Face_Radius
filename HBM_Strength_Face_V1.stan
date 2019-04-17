@@ -31,6 +31,7 @@ real <lower = mu1 [nsub], upper = pi()/6> mu2 [nsub];
 
 transformed parameters {
 
+
 }
 
 
@@ -49,7 +50,7 @@ model {
     pm[isub] ~ beta(alpha_pm, beta_pm);
     kappa1[isub] ~ gamma(Shape_kappa1, Scale_kappa1);    
 
-    for(i in 1:trials){         
+    for(i in 1:ntrials){         
            target += log_sum_exp(log(pm[isub])+log_sum_exp(log(0.5)+von_mises_log(errors[i,isub],mu1[isub],kappa1[isub]), log(0.5)+von_mises_log(errors[i,isub],mu2[isub],kappa1[isub])), log((1-pm[isub]) / (2*pi())));
 
 }
