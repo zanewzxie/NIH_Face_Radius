@@ -1,9 +1,11 @@
 // Fitting Single subjects' 'recall errors across 
 
 data {
-int<lower=1> trials;    // number of trials
+int<lower=1> ncond;    // number of trials
+int<lower=1> ntrials;    // number of trials per condition per sub
 int<lower=1> nsub;      // number of subjects for each conditions
-real<lower= -pi(),upper = pi()>  errors [trials, nsub];    //Errors
+real<lower= -pi(),upper = pi()>  allerrors [ntrials];    //Errors
+vector [ncond] RadiusLevel; // all z hand
 }
 
 parameters {

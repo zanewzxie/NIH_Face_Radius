@@ -1,11 +1,11 @@
-addpath(genpath('/Users/macpro/Documents/MATLAB/MatlabStan/'), '-end')
-% addpath(genpath('/Applications/ToolBox/STAN_HBM/MatlabStan-2.15.1.0'), '-end')
-addpath(genpath('/Users/macpro/Documents/Data/Hyungbum/BHM_Park_Play/MemToolbox'), '-end')
-%%
-% Fit mulitple subject's data using Stan for various conditions All at once!
-clear all; close all
 
-cd('/Users/macpro/Documents/Data/Hyungbum/BHM_Park_Play')
+% add stan toolbox. 
+addpath(genpath('/Users/macpro/Documents/MATLAB/MatlabStan/'), '-end')
+addpath(genpath('/Users/macpro/Documents/Data/Hyungbum/BHM_Park_Play/MemToolbox'), '-end')
+
+
+%% Fit mulitple subject's data using Stan for various conditions All at once!
+clear all; close all
 
 if exist('temp.data.R', 'file') ~=0
     delete('temp.data.R')
@@ -25,7 +25,7 @@ if exist('output-4.csv', 'file') ~=0
 end
 
 % import data
-load('TwoVM.mat')
+load('/Users/Zane/Documents/Bethesda/Research/NIH_Face_Radius/Exp4Face.mat')
 %load('TwoVM_Exp3.mat')
 %% Simulation
 
@@ -48,24 +48,29 @@ load('TwoVM.mat')
 % TwoVM = SimData; %% temp
 
 %% Make data structure as Data.errors(ncond, nsub, ntrial)
-nsub =  length(unique(TwoVM(:,1)));
-% nsub = 10;
-% ntrials = 500; 
-ntrials = length(TwoVM)/nsub;
-Data.trials = ntrials;
+nsub =  10; % length(unique(TwoVM(:,1)));
+% ntrials = length(TwoVM)/nsub;
 Data.nsub  = nsub;
+Data.ncond  = 4; 
+Data.RadiusLevel = [2 3 4 5];
+
+Data.allerrors=[];
+Data.allsubj=[];
+Data.allradius=[];
 
 for isub=1:nsub
-%     Data.errors(:,isub) = TwoVM((TwoVM(:,1)==isub)&(TwoVM(:,2)==2),3);
-    Data.errors(:,isub) = TwoVM(TwoVM(:,1)==isub,1);
-    
-    a = Data.errors(:,isub);
-    a = deg2rad(a);
-    a(a > 3.14159) = 3.14159;
-    a(a < -3.14159) = -3.14159;
-    Data.errors(:,isub) = a;
+    mask=DataAll{isub}.Task==1 & DataAll{isub}.WhichWheel>=2;   
+    Data.allerrors=[ Data.allerrors; DataAll{isub}.errors(mask)];
+    Data.allradius=[ Data.allradius; DataAll{isub}.WhichWheel(mask)];
+    Data.allsubj=[ Data.allsubj; ones(length(DataAll{isub}.errors(mask)),1)*isub];
 end
-Data
+Data.ntrials=length(Data.allerrors);
+a = Data.allerrors;
+a = deg2rad(a);
+a(a > 3.14159) = 3.14159;
+a(a < -3.14159) = -3.14159;
+Data.allerrors=a;
+
 %% Stan
 
 % model = 'RAC_Beta_Gamma_OneVM.stan';
